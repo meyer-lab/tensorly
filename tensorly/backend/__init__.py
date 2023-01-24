@@ -113,6 +113,7 @@ class BackendManager(types.ModuleType):
         "asinh",
         "acosh",
         "atanh",
+        "maximum",
         "partial_svd",
     ]
     _attributes = [

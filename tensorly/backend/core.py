@@ -51,6 +51,7 @@ backend_array = [
     "count_nonzero",
     "eye",
     "sqrt",
+    "maximum",
     "abs",
     "min",
     "zeros_like",

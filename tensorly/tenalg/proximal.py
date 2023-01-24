@@ -989,28 +989,16 @@ def hals_nnls(
         for k in range(rank):
 
             if UtU[k, k]:
-                if (
-                    sparsity_coefficient is not None
-                ):  # Modifying the function for sparsification
+                UtM_UtU = UtM[k, :] - tl.dot(UtU[k, :], V)
+                if sparsity_coefficient is not None:
+                    # Modifying the function for sparsification
+                    UtM_UtU -= sparsity_coefficient
 
-                    deltaV = tl.where(
-                        (UtM[k, :] - tl.dot(UtU[k, :], V) - sparsity_coefficient)
-                        / UtU[k, k]
-                        > -V[k, :],
-                        (UtM[k, :] - tl.dot(UtU[k, :], V) - sparsity_coefficient)
-                        / UtU[k, k],
-                        -V[k, :],
-                    )
-                    V = tl.index_update(V, tl.index[k, :], V[k, :] + deltaV)
+                UtM_UtU /= UtU[k, k]
 
-                else:  # without sparsity
+                deltaV = tl.maximum(UtM_UtU, -V[k, :])
 
-                    deltaV = tl.where(
-                        (UtM[k, :] - tl.dot(UtU[k, :], V)) / UtU[k, k] > -V[k, :],
-                        (UtM[k, :] - tl.dot(UtU[k, :], V)) / UtU[k, k],
-                        -V[k, :],
-                    )
-                    V = tl.index_update(V, tl.index[k, :], V[k, :] + deltaV)
+                V = tl.index_update(V, tl.index[k, :], V[k, :] + deltaV)
 
                 rec_error = rec_error + tl.dot(deltaV, tl.transpose(deltaV))
 
