@@ -5,7 +5,6 @@ from .core import (
     backend_basic_math,
     backend_array,
 )
-import scipy.special
 
 
 class NumpyBackend(Backend, backend_name="numpy"):
@@ -77,12 +76,10 @@ for name in (
         "sum",
         "argmin",
         "argmax",
-        "sign",
         "stack",
         "conj",
         "diag",
         "log",
-        "log2",
         "tensordot",
         "argsort",
         "sort",
@@ -94,6 +91,3 @@ for name in (
 
 for name in ["solve", "qr", "svd", "eigh"]:
     NumpyBackend.register_method(name, getattr(np.linalg, name))
-
-for name in ["digamma"]:
-    NumpyBackend.register_method(name, getattr(scipy.special, name))

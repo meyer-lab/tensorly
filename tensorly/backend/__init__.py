@@ -1,6 +1,6 @@
 import warnings
 
-from .core import Backend
+from .core import Backend, backend_types, backend_basic_math, backend_array
 import importlib
 import os
 import threading
@@ -32,45 +32,26 @@ class dynamically_dispatched_class_attribute(object):
 
 
 class BackendManager(types.ModuleType):
-    _functions = [
-        "reshape",
+    _functions = backend_basic_math + backend_array + [
         "moveaxis",
-        "any",
         "trace",
         "shape",
         "ndim",
-        "where",
         "copy",
         "transpose",
         "arange",
-        "ones",
-        "zeros",
-        "zeros_like",
-        "eye",
         "kron",
         "concatenate",
         "max",
-        "min",
-        "matmul",
-        "all",
         "mean",
         "sum",
-        "cumsum",
-        "prod",
-        "sign",
-        "abs",
-        "sqrt",
         "argmin",
         "argmax",
         "stack",
         "conj",
         "diag",
-        "einsum",
-        "log",
-        "log2",
         "dot",
         "tensordot",
-        "exp",
         "clip",
         "kr",
         "kron",
@@ -82,7 +63,6 @@ class BackendManager(types.ModuleType):
         "qr",
         "randn",
         "gamma",
-        "digamma",
         "check_random_state",
         "sort",
         "eigh",
@@ -94,39 +74,17 @@ class BackendManager(types.ModuleType):
         "is_tensor",
         "argsort",
         "flip",
-        "count_nonzero",
-        "sin",
-        "cos",
-        "tan",
         "asin",
         "acos",
         "atan",
-        "arcsin",
-        "arccos",
-        "arctan",
-        "sinh",
-        "cosh",
-        "tanh",
-        "arcsinh",
-        "arccosh",
-        "arctanh",
         "asinh",
         "acosh",
         "atanh",
-        "maximum",
         "partial_svd",
     ]
-    _attributes = [
-        "int64",
-        "int32",
-        "float64",
-        "float32",
-        "pi",
-        "e",
-        "inf",
+
+    _attributes = backend_types + [
         "nan",
-        "complex128",
-        "complex64",
         "index",
         "backend_name",
     ]
@@ -357,6 +315,6 @@ class BackendManager(types.ModuleType):
 
 # Initialise the backend to the default one
 BackendManager.initialize_backend()
-BackendManager.use_dynamic_dispatch()
+BackendManager.use_static_dispatch()
 
 sys.modules[__name__].__class__ = BackendManager

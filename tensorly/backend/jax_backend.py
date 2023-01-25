@@ -6,7 +6,6 @@ try:
 
     config.update("jax_enable_x64", True)
     import jax.numpy as np
-    import jax.scipy.special
 except ImportError as error:
     message = (
         "Impossible to import Jax.\n"
@@ -16,7 +15,6 @@ except ImportError as error:
     raise ImportError(message) from error
 
 import numpy
-import copy
 
 from .core import (
     Backend,
@@ -97,11 +95,9 @@ for name in (
         "argmin",
         "argmax",
         "stack",
-        "sign",
         "conj",
         "diag",
         "clip",
-        "log2",
         "tensordot",
         "argsort",
         "sort",

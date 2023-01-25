@@ -113,19 +113,13 @@ for name in ["diag", "qr", "eigh", "trace"]:
     TensorflowBackend.register_method(name, getattr(tf.linalg, name))
 
 
-# Register tfm functions
-TensorflowBackend.register_method("digamma", getattr(tfm, "digamma"))
-
-
 # Register tnp functions
 for name in (
     backend_types
     + backend_basic_math
     + backend_array
     + [
-        "log2",
         "concatenate",
-        "flip",
         "dot",
         "argmin",
         "argmax",
@@ -134,7 +128,6 @@ for name in (
         "stack",
         "copy",
         "max",
-        "sign",
         "mean",
         "sum",
         "moveaxis",

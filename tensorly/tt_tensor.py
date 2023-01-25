@@ -6,7 +6,6 @@ import tensorly as tl
 from ._factorized_tensor import FactorizedTensor
 from .utils import DefineDeprecated
 import numpy as np
-from scipy.optimize import brentq
 import warnings
 
 

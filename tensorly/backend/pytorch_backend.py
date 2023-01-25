@@ -251,8 +251,6 @@ for name in (
         "trace",
         "conj",
         "finfo",
-        "log2",
-        "digamma",
     ]
 ):
     PyTorchBackend.register_method(name, getattr(torch, name))

@@ -8,7 +8,7 @@ import scipy.sparse.linalg
 import sparse
 
 from . import register_sparse_backend
-from ....backend.core import Backend
+from ....backend.core import Backend, backend_basic_math
 
 
 _MIN_SPARSE_VERSION = Version("0.4.1+10.g81eccee")
@@ -166,7 +166,7 @@ class NumpySparseBackend(Backend, backend_name="numpy.sparse"):
         return U, S, V.T.conj()
 
 
-for name in [
+for name in backend_basic_math + [
     "int64",
     "int32",
     "float64",
@@ -183,7 +183,6 @@ for name in [
     "prod",
     "sqrt",
     "abs",
-    "sign",
     "arange",
     "conj",
     "shape",

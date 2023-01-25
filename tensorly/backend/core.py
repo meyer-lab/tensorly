@@ -24,10 +24,12 @@ backend_types = [
 backend_basic_math = [
     "exp",
     "log",
+    "log2",
     "tanh",
     "cosh",
     "sinh",
     "sin",
+    "sign",
     "cos",
     "tan",
     "arctanh",
@@ -570,12 +572,14 @@ class Backend(object):
         raise NotImplementedError
 
     @staticmethod
-    def argmin(tensor):
+    def argmin(tensor, axis=None):
         """The argument of the min value in a tensor.
 
         Parameters
         ----------
         tensor : tensor
+        axis : int, optional
+            If provided, the argmin is computed along this axis.
 
         Returns
         -------
@@ -1166,13 +1170,6 @@ class Backend(object):
     def exp(x):
         """Calculate the exponential of all elements in the input array."""
         raise NotImplementedError
-
-    def digamma(self, x):
-        """The digamma function.
-
-        The logarithmic derivative of the gamma function evaluated at z.
-        """
-        return self.tensor(scipy.special.digamma(x), **self.context(x))
 
     @staticmethod
     def flip(tensor, axis=None):
