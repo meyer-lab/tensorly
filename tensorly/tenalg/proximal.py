@@ -434,10 +434,11 @@ def smoothness_prox(tensor, regularizer):
     ndarray
 
     """
+    size_x = tl.shape(tensor)[0]
     diag_matrix = (
-        tl.diag(2 * regularizer * tl.ones(tl.shape(tensor)[0]) + 1)
-        + tl.diag(-regularizer * tl.ones(tl.shape(tensor)[0] - 1), k=-1)
-        + tl.diag(-regularizer * tl.ones(tl.shape(tensor)[0] - 1), k=1)
+        tl.diag(2 * regularizer * tl.ones(size_x) + 1)
+        + tl.diag(-regularizer * tl.ones(size_x - 1), k=-1)
+        + tl.diag(-regularizer * tl.ones(size_x - 1), k=1)
     )
     return tl.solve(diag_matrix, tensor)
 
@@ -481,21 +482,19 @@ def monotonicity_prox(tensor, decreasing=False):
     cum_sum = tl.cumsum(tensor_mon, axis=0)
     for j in range(column):
         assisted_tensor = tl.zeros([row, row])
+
         for i in range(row):
-            if i == 0:
-                assisted_tensor = tl.index_update(
-                    assisted_tensor,
-                    tl.index[i, i:],
-                    cum_sum[i:, j]
-                    / tl.tensor(tl.arange(row - i) + 1, **tl.context(tensor)),
-                )
-            else:
-                assisted_tensor = tl.index_update(
-                    assisted_tensor,
-                    tl.index[i, i:],
-                    (cum_sum[i:, j] - cum_sum[i - 1, j])
-                    / tl.tensor(tl.arange(row - i) + 1, **tl.context(tensor)),
-                )
+            fill = cum_sum[i:, j]
+
+            if i > 0:
+                fill -= cum_sum[i - 1, j]
+
+            assisted_tensor = tl.index_update(
+                assisted_tensor,
+                tl.index[i, i:],
+                fill / tl.arange(1, row - i + 1, **tl.context(tensor)),
+            )
+
         tensor_mon = tl.index_update(
             tensor_mon, tl.index[:, j], tl.max(assisted_tensor, axis=0)
         )
@@ -527,7 +526,7 @@ def unimodality_prox(tensor):
     References
     ----------
     .. [1]: Bro, R., & Sidiropoulos, N. D. (1998). Least squares algorithms under
-            unimodality and non‐negativity constraints. Journal of Chemometrics:
+            unimodality and non-negativity constraints. Journal of Chemometrics:
             A Journal of the Chemometrics Society, 12(4), 223-247.
     """
     if tl.ndim(tensor) == 1:
@@ -538,59 +537,33 @@ def unimodality_prox(tensor):
         )
 
     tensor_unimodal = tl.copy(tensor)
-    monotone_increasing = tl.tensor(monotonicity_prox(tensor), **tl.context(tensor))
-    monotone_decreasing = tl.tensor(
-        monotonicity_prox(tensor, decreasing=True), **tl.context(tensor)
-    )
+    monotone_increasing = monotonicity_prox(tensor)
+    monotone_decreasing = monotonicity_prox(tensor, decreasing=True)
+
     # Next line finds mutual peak points
-    values = tl.tensor(
-        tl.to_numpy((tensor - monotone_decreasing >= 0))
-        * tl.to_numpy((tensor - monotone_increasing >= 0)),
-        **tl.context(tensor)
-    )
+    xx = tensor - monotone_decreasing >= 0
+    idxs = (xx * xx) == 1
 
-    sum_inc = tl.where(
-        values == 1,
-        tl.cumsum(tl.abs(tensor - monotone_increasing), axis=0),
-        tl.tensor(0, **tl.context(tensor)),
-    )
-    sum_inc = tl.where(
-        values == 1,
-        sum_inc - tl.abs(tensor - monotone_increasing),
-        tl.tensor(0, **tl.context(tensor)),
-    )
-    sum_dec = tl.where(
-        tl.flip(values, axis=0) == 1,
-        tl.cumsum(
-            tl.abs(tl.flip(tensor, axis=0) - tl.flip(monotone_decreasing, axis=0)),
-            axis=0,
-        ),
-        tl.tensor(0, **tl.context(tensor)),
-    )
-    sum_dec = tl.where(
-        tl.flip(values, axis=0) == 1,
-        sum_dec
-        - tl.abs(tl.flip(tensor, axis=0) - tl.flip(monotone_decreasing, axis=0)),
-        tl.tensor(0, **tl.context(tensor)),
-    )
+    yy = tl.abs(tensor - monotone_increasing)
+    sum_inc = tl.where(idxs, tl.cumsum(yy, axis=0) - yy, 0)
 
-    difference = tl.where(
-        values == 1,
-        sum_inc + tl.flip(sum_dec, axis=0),
-        tl.max(sum_inc + tl.flip(sum_dec, axis=0)),
-    )
-    min_indice = tl.argmin(tl.tensor(difference), axis=0)
+    yy = tl.abs(tl.flip(tensor, axis=0) - tl.flip(monotone_decreasing, axis=0))
+    sum_dec = tl.where(tl.flip(idxs, axis=0), tl.cumsum(yy, axis=0) - yy, 0)
 
-    for i in range(len(min_indice)):
+    yy = sum_inc + tl.flip(sum_dec, axis=0)
+    difference = tl.where(idxs, yy, tl.max(yy))
+    min_indice = tl.argmin(difference, axis=0)
+
+    for i, min_i in enumerate(min_indice):
         tensor_unimodal = tl.index_update(
             tensor_unimodal,
-            tl.index[: int(min_indice[i]), i],
-            monotone_increasing[: int(min_indice[i]), i],
+            tl.index[: min_i, i],
+            monotone_increasing[: min_i, i],
         )
         tensor_unimodal = tl.index_update(
             tensor_unimodal,
-            tl.index[int(min_indice[i] + 1) :, i],
-            monotone_decreasing[int(min_indice[i] + 1) :, i],
+            tl.index[(min_i + 1) :, i],
+            monotone_decreasing[(min_i + 1) :, i],
         )
     return tensor_unimodal
 
@@ -981,13 +954,16 @@ def hals_nnls(
         scale = tl.sum(UtM * V) / tl.sum(UtU * tl.dot(V, tl.transpose(V)))
         V = V * scale
 
+    numerator = tl.shape(V)[0] * tl.shape(V)[1] + tl.shape(V)[1] * rank
+    denominator = tl.shape(V)[0] * rank + tl.shape(V)[0]
+    complexity_ratio = 1 + (numerator / denominator)
+
     if exact:
         n_iter_max = 50000
         tol = 10e-16
     for iteration in range(n_iter_max):
         rec_error = 0
         for k in range(rank):
-
             if UtU[k, k]:
                 UtM_UtU = UtM[k, :] - tl.dot(UtU[k, :], V)
                 if sparsity_coefficient is not None:
@@ -997,7 +973,6 @@ def hals_nnls(
                 UtM_UtU /= UtU[k, k]
 
                 deltaV = tl.maximum(UtM_UtU, -V[k, :])
-
                 V = tl.index_update(V, tl.index[k, :], V[k, :] + deltaV)
 
                 rec_error = rec_error + tl.dot(deltaV, tl.transpose(deltaV))
@@ -1021,9 +996,6 @@ def hals_nnls(
         if iteration == 0:
             rec_error0 = rec_error
 
-        numerator = tl.shape(V)[0] * tl.shape(V)[1] + tl.shape(V)[1] * rank
-        denominator = tl.shape(V)[0] * rank + tl.shape(V)[0]
-        complexity_ratio = 1 + (numerator / denominator)
         if exact:
             if rec_error < tol * rec_error0:
                 break
