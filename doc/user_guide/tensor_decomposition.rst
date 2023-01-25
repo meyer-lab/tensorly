@@ -143,8 +143,8 @@ Using the same tensor as previously, we will perform a rank [1,2,1]-decompositio
 
 .. code::
 
-   >>> from tensorly.decomposition import matrix_product_state
-   >>> factors = matrix_product_state(tensor, rank=[1,2,1])
+   >>> from tensorly.decomposition import tensor_train
+   >>> factors = tensor_train(tensor, rank=[1,2,1])
    >>> len(factors)
    2
    >>> [f.shape for f in factors]
