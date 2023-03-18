@@ -852,7 +852,6 @@ def hals_nnls(
     nonzero_rows=False,
     exact=False,
 ):
-
     """
     Non Negative Least Squares (NNLS)
 
@@ -1152,7 +1151,6 @@ def active_set_nnls(Utm, UtU, x=None, n_iter_max=100, tol=10e-8):
     support_vec = tl.zeros(tl.shape(x_vec), **tl.context(x_vec))
 
     for iteration in range(n_iter_max):
-
         if iteration > 0 or tl.all(x_vec == 0):
             indice = tl.argmax(x_gradient)
             passive_set = tl.index_update(passive_set, tl.index[indice], True)
