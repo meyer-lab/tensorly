@@ -1218,6 +1218,11 @@ class Backend(object):
         raise NotImplementedError
 
     @staticmethod
+    def sign(x):
+        """Return the sign of x."""
+        raise NotImplementedError
+
+    @staticmethod
     def arcsin(x):
         """Return the arcsin of x."""
         raise NotImplementedError
