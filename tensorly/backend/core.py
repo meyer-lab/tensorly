@@ -1190,6 +1190,13 @@ class Backend(object):
         """Calculate the exponential of all elements in the input array."""
         raise NotImplementedError
 
+    def digamma(self, x):
+        """The digamma function.
+
+        The logarithmic derivative of the gamma function evaluated at z.
+        """
+        return self.tensor(scipy.special.digamma(x), **self.context(x))
+
     @staticmethod
     def flip(tensor, axis=None):
         """Reverse the order of elements in an array along the given axis."""
