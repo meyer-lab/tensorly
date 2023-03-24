@@ -51,6 +51,7 @@ class BackendManager(types.ModuleType):
             "argmin",
             "argmax",
             "stack",
+            "sign",
             "conj",
             "diag",
             "dot",
@@ -320,6 +321,6 @@ class BackendManager(types.ModuleType):
 
 # Initialise the backend to the default one
 BackendManager.initialize_backend()
-BackendManager.use_static_dispatch()
+BackendManager.use_dynamic_dispatch()
 
 sys.modules[__name__].__class__ = BackendManager

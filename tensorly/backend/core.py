@@ -29,7 +29,6 @@ backend_basic_math = [
     "cosh",
     "sinh",
     "sin",
-    "sign",
     "cos",
     "tan",
     "arctanh",

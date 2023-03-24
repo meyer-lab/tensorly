@@ -82,6 +82,7 @@ for name in (
         "argmax",
         "sum",
         "stack",
+        "sign",
         "conj",
         "diag",
         "tensordot",
