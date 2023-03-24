@@ -117,6 +117,10 @@ for name in ["diag", "qr", "eigh", "trace"]:
     TensorflowBackend.register_method(name, getattr(tf.linalg, name))
 
 
+# Register tfm functions
+TensorflowBackend.register_method("digamma", getattr(tfm, "digamma"))
+
+
 # Register tnp functions
 for name in (
     backend_types

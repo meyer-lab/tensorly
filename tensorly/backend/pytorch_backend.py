@@ -222,6 +222,7 @@ for name in (
         "trace",
         "conj",
         "finfo",
+        "digamma",
     ]
 ):
     PyTorchBackend.register_method(name, getattr(torch, name))
