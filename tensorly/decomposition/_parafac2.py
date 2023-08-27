@@ -9,7 +9,7 @@ from ..parafac2_tensor import (
     Parafac2Tensor,
     _validate_parafac2_tensor,
 )
-from ..cp_tensor import CPTensor
+from ..cp_tensor import CPTensor, cp_normalize
 from ..tenalg.svd import svd_interface
 
 # Authors: Marie Roald
@@ -77,7 +77,7 @@ def _compute_projections(tensor_slices, factors, svd):
     for A, tensor_slice in zip(factors[0], tensor_slices):
         lhs = T.dot(factors[1], T.transpose(A * factors[2]))
         rhs = T.transpose(tensor_slice)
-        U, _, Vh = svd_interface(T.dot(lhs, rhs), n_eigenvecs=n_eig, method=svd)
+        U, _, Vh = svd_interface(T.dot(lhs, rhs), n_eigenvecs=n_eig, method=svd, flip_sign=False)
 
         out.append(T.transpose(T.dot(U, Vh)))
 
@@ -164,6 +164,7 @@ def parafac2(
     verbose=False,
     return_errors=False,
     n_iter_parafac=5,
+    linesearch=True,
 ):
     r"""PARAFAC2 decomposition [1]_ of a third order tensor via alternating least squares (ALS)
 
@@ -287,7 +288,7 @@ def parafac2(
     non-negative, then :math:`B` will be non-negative, but not the orthogonal `P_i` matrices.
     Consequently, the `B_i` matrices are unlikely to be non-negative.
     """
-    weights, factors, projections = initialize_decomposition(
+    _, factors, projections = initialize_decomposition(
         tensor_slices, rank, init=init, svd=svd, random_state=random_state
     )
 
@@ -296,26 +297,31 @@ def parafac2(
         sum(tl.norm(tensor_slice, 2) ** 2 for tensor_slice in tensor_slices)
     )
 
+    if linesearch:
+        acc_pow = 2.0  # Extrapolate to the iteration^(1/acc_pow) ahead
+        acc_fail = 0  # How many times acceleration have failed
+        max_fail = 4  # Increase acc_pow with one after max_fail failure
+
     if absolute_tol is None:
         absolute_tol = tl.eps(factors[0].dtype) * 1000
 
     # If nn_modes is set, we use HALS, otherwise, we use the standard parafac implementation.
     if nn_modes is None:
 
-        def parafac_updates(X, w, f):
+        def parafac_updates(X, f):
             return parafac(
                 X,
                 rank,
                 n_iter_max=n_iter_parafac,
-                init=(w, f),
+                init=(None, f),
                 svd=svd,
                 orthogonalise=False,
-                verbose=verbose,
+                verbose=False,
                 return_errors=False,
                 normalize_factors=False,
                 mask=None,
                 random_state=random_state,
-                tol=1e-100,
+                tol=None,
             )[1]
 
     else:
@@ -324,50 +330,64 @@ def parafac2(
                 "Mode `1` of PARAFAC2 fitted with ALS cannot be constrained to be truly non-negative. See the documentation for more info."
             )
 
-        def parafac_updates(X, w, f):
+        def parafac_updates(X, f):
             return non_negative_parafac_hals(
                 X,
                 rank,
                 n_iter_max=n_iter_parafac,
-                init=(w, f),
+                init=(None, f),
                 svd=svd,
                 nn_modes=nn_modes,
-                verbose=verbose,
+                verbose=False,
                 return_errors=False,
-                tol=1e-100,
+                tol=None,
             )[1]
 
     for iteration in range(n_iter_max):
         if verbose:
             print("Starting iteration", iteration)
-        factors[1] = factors[1] * T.reshape(weights, (1, -1))
-        weights = T.ones(weights.shape, **tl.context(tensor_slices[0]))
+
+        # Will we be performing a line search iteration
+        if linesearch and iteration % 2 == 0 and iteration > 5:
+            line_iter = True
+            factors_last = [tl.copy(f) for f in factors]
+        else:
+            line_iter = False
 
         projections = _compute_projections(tensor_slices, factors, svd)
         projected_tensor = _project_tensor_slices(tensor_slices, projections)
-        factors = parafac_updates(projected_tensor, weights, factors)
+        factors = parafac_updates(projected_tensor, factors)
 
-        if normalize_factors:
-            new_factors = []
-            for factor in factors:
-                norms = T.norm(factor, axis=0)
-                norms = tl.where(
-                    tl.abs(norms) <= tl.eps(factor.dtype),
-                    tl.ones(tl.shape(norms), **tl.context(factors[0])),
-                    norms,
-                )
-
-                weights = weights * norms
-                new_factors.append(factor / (tl.reshape(norms, (1, -1))))
-
-            factors = new_factors
-
-        if tol:
+        if tol or linesearch:
             rec_error = _parafac2_reconstruction_error(
-                tensor_slices, (weights, factors, projections), norm_tensor
+                tensor_slices, (None, factors, projections), norm_tensor
             )
             rec_error /= norm_tensor
             rec_errors.append(rec_error)
+
+            if line_iter:
+                jump = iteration ** (1.0 / acc_pow)
+            
+                new_factors = [
+                    factors_last[ii] + (factors[ii] - factors_last[ii]) * jump
+                    for ii in range(len(factors))
+                ]
+
+                new_projections = _compute_projections(tensor_slices, new_factors, svd)
+                new_rec_error = _parafac2_reconstruction_error(
+                    tensor_slices, (None, new_factors, new_projections), norm_tensor
+                )
+
+                if (new_rec_error / norm_tensor) < rec_errors[-1]:
+                    if verbose:
+                        print(f"Line search jump {jump} accepted.")
+                    
+                    projections = new_projections
+                    rec_errors[-1] = new_rec_error / norm_tensor
+                    factors = new_factors
+                else:
+                    if verbose:
+                        print(f"Line search jump {jump} rejected.")
 
             if iteration >= 1:
                 if verbose:
@@ -386,6 +406,11 @@ def parafac2(
             else:
                 if verbose:
                     print(f"PARAFAC2 reconstruction error={rec_errors[-1]}")
+
+    if normalize_factors:
+        weights, factors = cp_normalize((None, factors))
+    else:
+        weights = None
 
     parafac2_tensor = Parafac2Tensor((weights, factors, projections))
 
@@ -521,6 +546,7 @@ class Parafac2(DecompositionMixin):
         verbose=False,
         return_errors=False,
         n_iter_parafac=5,
+        linesearch=True,
     ):
         self.rank = rank
         self.n_iter_max = n_iter_max
@@ -534,6 +560,7 @@ class Parafac2(DecompositionMixin):
         self.verbose = verbose
         self.return_errors = return_errors
         self.n_iter_parafac = n_iter_parafac
+        self.linesearch = linesearch
 
     def fit_transform(self, tensor):
         """Decompose an input tensor
@@ -560,5 +587,6 @@ class Parafac2(DecompositionMixin):
             verbose=self.verbose,
             return_errors=self.return_errors,
             n_iter_parafac=self.n_iter_parafac,
+            linesearch=self.linesearch,
         )
         return self.decomposition_
