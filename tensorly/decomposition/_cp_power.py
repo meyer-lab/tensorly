@@ -34,7 +34,7 @@ def power_iteration(tensor, n_repeat=10, n_iteration=10, verbose=False):
     deflated : tl.tensor of same shape as `tensor`
         the deflated tensor (i.e. without the estimated component)
     """
-    order = tl.ndim(tensor)
+    order = tensor.ndim
 
     # A list of candidates for each mode
     scores = []
@@ -105,7 +105,7 @@ def parafac_power_iteration(tensor, rank, n_repeat=10, n_iteration=10, verbose=0
     """
     rank = validate_cp_rank(tl.shape(tensor), rank=rank)
 
-    order = tl.ndim(tensor)
+    order = tensor.ndim
     factors = []
     weights = []
 

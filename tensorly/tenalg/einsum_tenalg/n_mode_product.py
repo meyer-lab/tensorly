@@ -35,7 +35,7 @@ def mode_dot(tensor, matrix_or_vector, mode, transpose=False):
     multi_mode_dot : chaining several mode_dot in one call
     """
     # the mode along which to fold might decrease if we take product with a vector
-    tensor_order = tl.ndim(tensor)
+    tensor_order = tensor.ndim
     start = ord("a")
     tensor_modes = "".join(chr(start + i) for i in range(tensor_order))
     result_modes = [
@@ -110,7 +110,7 @@ def multi_mode_dot(tensor, matrix_or_vec_list, modes=None, skip=None, transpose=
     --------
     mode_dot
     """
-    order = tl.ndim(tensor)
+    order = tensor.ndim
 
     if modes is None:
         modes = range(len(matrix_or_vec_list))
@@ -135,14 +135,14 @@ def multi_mode_dot(tensor, matrix_or_vec_list, modes=None, skip=None, transpose=
             # print(f'skipping {skip}')
             continue
 
-        if tl.ndim(matrix_or_vec) == 1:
+        if matrix_or_vec.ndim == 1:
             matrix_or_vec_list.append(matrix_or_vec)
             equation += f",{tensor_modes[mode]}"
             # We are contracting over the mode-th dimension
             result_modes.pop(mode - decrement)
             decrement += 1
 
-        elif tl.ndim(matrix_or_vec) == 2:
+        elif matrix_or_vec.ndim == 2:
             if transpose:
                 matrix_or_vec_list.append(tl.conj(tl.transpose(matrix_or_vec)))
                 # mat_symbol = f'{tensor_modes[mode]}{chr(counter)}'

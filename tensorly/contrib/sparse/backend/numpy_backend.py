@@ -53,10 +53,6 @@ class NumpySparseBackend(Backend, backend_name="numpy.sparse"):
         return _py_copy(tensor)
 
     @staticmethod
-    def clip(tensor, a_min=None, a_max=None):
-        return np.clip(tensor, a_min, a_max)
-
-    @staticmethod
     def norm(tensor, order=2, axis=None):
         # handle difference in default axis notation
         if axis == ():

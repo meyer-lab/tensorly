@@ -4,26 +4,26 @@ import tensorly as tl
 
 def jointdiag(
     X,
-    MaxIter: int = 50,
+    max_iter: int = 50,
     threshold: float = 1e-10,
     verbose: bool=False,
 ):
     """
     Jointly diagonalizes n matrices, organized in tensor of dimension (k,k,n).
-    Returns Diagonalized matrices.
-    If showQ = True, returns transform matrix in second index.
-    If showError = True, returns estimate of error in third index.
+    Returns the diagonalized matrices, along with the transformation matrix.
+
+    If verbose = True, returns estimate of error in third index.
     """
 
     X = tl.tensor(X, **tl.context(X))
     D = tl.shape(X)[0]  # Dimension of square matrix slices
-    assert tl.ndim(X) == 3, "Input must be a 3D tensor"
+    assert X.ndim == 3, "Input must be a 3D tensor"
     assert D == X.shape[1], "All slices must be square"
     assert tl.all(tl.isreal(X)), "Must be real-valued"
 
     # Initial error calculation
     # Transpose is because np.tril operates on the last two dimensions
-    e = tl.norm(X) ** 2.0 - tl.norm(np.diagonal(X, axis1=1, axis2=2)) ** 2.0
+    e = tl.norm(X) ** 2.0 - tl.norm(tl.diagonal(X, axis1=1, axis2=2)) ** 2.0
 
     if verbose:
         print(f"Sweep # 0: e = {e:.3e}")
@@ -31,7 +31,7 @@ def jointdiag(
     # Additional output parameters
     Q_total = tl.eye(D)
 
-    for k in range(MaxIter):
+    for k in range(max_iter):
         # loop over all pairs of slices
         for p, q in combinations(range(D), 2):
             # Finds matrix slice with greatest variability among diagonal elements
@@ -94,16 +94,16 @@ def jointdiag(
                 return Esum, Dsum, qt
 
             # Given's rotation, this will minimize norm of off-diagonal elements only
-            pvec = X[p, :, :].copy()
+            pvec = tl.copy(X[p, :, :])
             X[p, :, :] = X[p, :, :] * tl.cos(theta_k) - X[q, :, :] * tl.sin(theta_k)
             X[q, :, :] = pvec * tl.sin(theta_k) + X[q, :, :] * tl.cos(theta_k)
 
-            pvec = X[:, p, :].copy()
+            pvec = tl.copy(X[:, p, :])
             X[:, p, :] = X[:, p, :] * tl.cos(theta_k) - X[:, q, :] * tl.sin(theta_k)
             X[:, q, :] = pvec * tl.sin(theta_k) + X[:, q, :] * tl.cos(theta_k)
 
             # Update Q_total
-            pvec = Q_total[:, p].copy()
+            pvec = tl.copy(Q_total[:, p])
             Q_total[:, p] = Q_total[:, p] * tl.cos(theta_k) - Q_total[:, q] * tl.sin(
                 theta_k
             )

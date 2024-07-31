@@ -96,8 +96,8 @@ def tensor_train_cross(input_tensor, rank, tol=1e-4, n_iter_max=100, random_stat
     elif tensor_order + 1 != len(rank):
         message = (
             "Provided incorrect number of ranks. Should verify "
-            + f"len(rank) == tl.ndim(tensor)+1, but len(rank) = {len(rank)} "
-            + f"while tl.ndim(tensor) + 1  = {tensor_order}"
+            + f"len(rank) == tensor.ndim+1, but len(rank) = {len(rank)} "
+            + f"while tensor.ndim + 1  = {tensor_order}"
         )
         raise (ValueError(message))
 

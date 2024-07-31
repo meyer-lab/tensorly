@@ -82,7 +82,7 @@ class CPRegressor:
         # Initialise randomly the weights
         W = []
         for i in range(
-            1, T.ndim(X)
+            1, X.ndim
         ):  # The first dimension of X is the number of samples
             W.append(T.tensor(rng.randn(X.shape[i], self.weight_rank), **T.context(X)))
 

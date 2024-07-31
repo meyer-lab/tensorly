@@ -12,7 +12,7 @@ except ImportError as error:
 
 import numpy as np
 
-from .core import Backend, backend_types, backend_basic_math, backend_array
+from .core import Backend, backend_types, backend_basic_math, backend_array, backend_all_but_pytorch
 
 
 class TensorflowBackend(Backend, backend_name="tensorflow"):
@@ -92,10 +92,6 @@ class TensorflowBackend(Backend, backend_name="tensorflow"):
         return res
 
     @staticmethod
-    def clip(tensor, a_min=None, a_max=None):
-        return tnp.clip(tensor, a_min, a_max)
-
-    @staticmethod
     def lstsq(a, b):
         n = a.shape[1]
         if tf.rank(b) == 1:
@@ -129,10 +125,6 @@ class TensorflowBackend(Backend, backend_name="tensorflow"):
         else:
             return tensor
 
-    @staticmethod
-    def logsumexp(tensor, axis=0):
-        return tfm.reduce_logsumexp(tensor, axis=axis)
-
 
 # Register numpy functions
 for name in ["nan"]:
@@ -140,12 +132,13 @@ for name in ["nan"]:
 
 
 # Register linalg functions
-for name in ["diag", "qr", "eigh", "trace"]:
+for name in ["diag", "qr", "eigh"]:
     TensorflowBackend.register_method(name, getattr(tf.linalg, name))
 
 
 # Register tfm functions
 TensorflowBackend.register_method("digamma", getattr(tfm, "digamma"))
+TensorflowBackend.register_method("logsumexp", tfm.reduce_logsumexp)
 
 
 # Register tnp functions
@@ -153,29 +146,21 @@ for name in (
     backend_types
     + backend_basic_math
     + backend_array
+    + backend_all_but_pytorch
     + [
         "log2",
         "concatenate",
         "flip",
         "dot",
-        "argmin",
-        "argmax",
         "conj",
-        "tensordot",
-        "stack",
         "copy",
         "max",
         "sign",
         "mean",
         "sum",
-        "moveaxis",
-        "ndim",
         "arange",
         "sort",
-        "argsort",
         "flip",
-        "stack",
-        "transpose",
     ]
 ):
     TensorflowBackend.register_method(name, getattr(tnp, name))

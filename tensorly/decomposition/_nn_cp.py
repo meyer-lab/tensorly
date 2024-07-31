@@ -98,19 +98,19 @@ def non_negative_parafac(
     if fixed_modes is None:
         fixed_modes = []
 
-    if tl.ndim(tensor) - 1 in fixed_modes:
+    if tensor.ndim - 1 in fixed_modes:
         warnings.warn(
             "You asked for fixing the last mode, which is not supported while tol is fixed.\n The last mode will not be fixed. Consider using tl.moveaxis()"
         )
-        fixed_modes.remove(tl.ndim(tensor) - 1)
-    modes_list = [mode for mode in range(tl.ndim(tensor)) if mode not in fixed_modes]
+        fixed_modes.remove(tensor.ndim - 1)
+    modes_list = [mode for mode in range(tensor.ndim) if mode not in fixed_modes]
 
     for iteration in range(n_iter_max):
         if verbose > 1:
             print("Starting iteration", iteration + 1)
         for mode in modes_list:
             if verbose > 1:
-                print("Mode", mode, "of", tl.ndim(tensor))
+                print("Mode", mode, "of", tensor.ndim)
 
             accum = 1
             # khatri_rao(factors).tl.dot(khatri_rao(factors))
@@ -278,7 +278,7 @@ def non_negative_parafac_hals(
 
     norm_tensor = tl.norm(tensor, 2)
 
-    n_modes = tl.ndim(tensor)
+    n_modes = tensor.ndim
     if sparsity_coefficients is None or isinstance(sparsity_coefficients, float):
         sparsity_coefficients = [sparsity_coefficients] * n_modes
 

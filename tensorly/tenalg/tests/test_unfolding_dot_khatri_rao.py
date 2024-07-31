@@ -20,7 +20,7 @@ def test_unfolding_dot_khatri_rao():
         shape=shape, rank=rank, full=False, normalise_factors=True
     )
 
-    for mode in range(tl.ndim(tensor)):
+    for mode in range(tensor.ndim):
         # Version forming explicitely the khatri-rao product
         unfolded = unfold(tensor, mode)
         kr_factors = khatri_rao(factors, weights=weights, skip_matrix=mode)

@@ -146,7 +146,7 @@ def test_parafac2_to_unfolded():
     true_rank = 2
     pf2_tensor = random_parafac2(true_shape, true_rank)
     full_tensor = parafac2_to_tensor(pf2_tensor)
-    for mode in range(tl.ndim(full_tensor)):
+    for mode in range(full_tensor.ndim):
         assert_array_almost_equal(
             parafac2_to_unfolded(pf2_tensor, mode), unfold(full_tensor, mode)
         )

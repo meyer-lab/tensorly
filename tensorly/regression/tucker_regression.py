@@ -83,7 +83,7 @@ class TuckerRegressor:
         # Initialise randomly the weights
         G = T.tensor(rng.randn(*self.weight_ranks), **T.context(X))
         W = []
-        for i in range(1, T.ndim(X)):  # First dimension of X = number of samples
+        for i in range(1, X.ndim):  # First dimension of X = number of samples
             W.append(T.tensor(rng.randn(X.shape[i], G.shape[i - 1]), **T.context(X)))
 
         # Norm of the weight tensor at each iteration

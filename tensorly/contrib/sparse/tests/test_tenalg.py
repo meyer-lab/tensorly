@@ -31,6 +31,6 @@ def test_sparse_unfolding_times_cp():
     weights = np.ones(rank)
     tensor = stl.cp_to_tensor((weights, factors))
 
-    for mode in range(tl.ndim(tensor)):
+    for mode in range(tensor.ndim):
         # Will blow-up memory if not sparse-safe
         _ = sparse_unfolding_dot_khatri_rao(tensor, (weights, factors), mode)

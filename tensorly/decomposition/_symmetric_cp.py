@@ -30,7 +30,7 @@ def symmetric_power_iteration(tensor, n_repeat=10, n_iteration=10, verbose=False
     deflated : tl.tensor of same shape as `tensor`
         the deflated tensor (i.e. without the estimated component)
     """
-    order = tl.ndim(tensor)
+    order = tensor.ndim
     size = tl.shape(tensor)[0]
 
     if not tl.shape(tensor) == (size,) * order:
@@ -109,7 +109,7 @@ def symmetric_parafac_power_iteration(
     """
     rank = validate_cp_rank(tl.shape(tensor), rank=rank)
 
-    order = tl.ndim(tensor)
+    order = tensor.ndim
     size = tl.shape(tensor)[0]
 
     if not tl.shape(tensor) == (size,) * order:

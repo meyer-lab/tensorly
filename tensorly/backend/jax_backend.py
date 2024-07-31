@@ -21,6 +21,7 @@ from .core import (
     backend_types,
     backend_basic_math,
     backend_array,
+    backend_all_but_pytorch,
 )
 
 
@@ -52,16 +53,8 @@ class JaxBackend(Backend, backend_name="jax"):
         # return copy.copy(tensor)
 
     @staticmethod
-    def ndim(tensor):
-        return tensor.ndim
-
-    @staticmethod
     def lstsq(a, b, rcond=None):
         return np.linalg.lstsq(a, b, rcond=rcond, numpy_resid=True)
-
-    @staticmethod
-    def logsumexp(tensor, axis=0):
-        return jax.scipy.special.logsumexp(tensor, axis=axis)
 
     @staticmethod
     def index_update(tensor, indices, values):
@@ -72,28 +65,21 @@ for name in (
     backend_types
     + backend_basic_math
     + backend_array
+    + backend_all_but_pytorch
     + [
         "nan",
-        "moveaxis",
-        "transpose",
         "arange",
         "flip",
-        "trace",
         "kron",
         "concatenate",
         "max",
         "mean",
         "sum",
-        "argmin",
-        "argmax",
-        "stack",
         "sign",
         "conj",
         "diag",
         "clip",
         "log2",
-        "tensordot",
-        "argsort",
         "sort",
         "dot",
         "shape",
@@ -106,3 +92,5 @@ for name in ["solve", "qr", "svd", "eigh"]:
 
 for name in ["gamma"]:
     JaxBackend.register_method(name, getattr(jax.random, name))
+
+JaxBackend.register_method("logsumexp", jax.scipy.special.logsumexp)

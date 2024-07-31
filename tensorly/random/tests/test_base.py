@@ -36,7 +36,7 @@ def test_random_cp():
     tensor = random_cp(shape, rank, full=True)
     assert T.shape(tensor) == shape
 
-    for i in range(T.ndim(tensor)):
+    for i in range(tensor.ndim):
         assert_equal(matrix_rank(T.to_numpy(unfold(tensor, i)), tol=1e-6), rank)
 
     weights, factors = random_cp(shape, rank, full=False)
@@ -72,7 +72,7 @@ def test_random_tucker():
     rank = 4
 
     tensor = random_tucker(shape, rank, full=True)
-    for i in range(T.ndim(tensor)):
+    for i in range(tensor.ndim):
         assert_equal(matrix_rank(T.to_numpy(unfold(tensor, i))), rank)
 
     core, factors = random_tucker(shape, rank, full=False)
@@ -86,7 +86,7 @@ def test_random_tucker():
     shape = (10, 11, 12)
     rank = (6, 4, 5)
     tensor = random_tucker(shape, rank, full=True)
-    for i in range(T.ndim(tensor)):
+    for i in range(tensor.ndim):
         assert_equal(matrix_rank(T.to_numpy(unfold(tensor, i))), min(shape[i], rank[i]))
 
     core, factors = random_tucker(shape, rank, orthogonal=True, full=False)

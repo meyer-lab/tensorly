@@ -94,9 +94,9 @@ def robust_pca(
         X, **T.context(X)
     )  # Lagrangian variables for the (X - D - E - L_x/mu) term
     J = [
-        T.zeros_like(X, **T.context(X)) for _ in range(T.ndim(X))
+        T.zeros_like(X, **T.context(X)) for _ in range(X.ndim)
     ]  # Low-rank modes of X
-    L = [T.zeros_like(X, **T.context(X)) for _ in range(T.ndim(X))]  # Lagrangian or J
+    L = [T.zeros_like(X, **T.context(X)) for _ in range(X.ndim)]  # Lagrangian or J
 
     # Norm of the reconstructions at each iteration
     rec_X = []
@@ -105,7 +105,7 @@ def robust_pca(
     mu = mu_init
 
     for iteration in range(n_iter_max):
-        for i in range(T.ndim(X)):
+        for i in range(X.ndim):
             J[i] = fold(
                 svd_thresholding(unfold(D, i) + unfold(L[i], i) / mu, reg_J / mu),
                 i,
@@ -113,14 +113,14 @@ def robust_pca(
             )
 
         D = L_x / mu + X - E
-        for i in range(T.ndim(X)):
+        for i in range(X.ndim):
             D += J[i] - L[i] / mu
-        D /= T.ndim(X) + 1
+        D /= X.ndim + 1
 
         E = soft_thresholding(X - D + L_x / mu, mask * reg_E / mu)
 
         # Update the lagrangian multipliers
-        for i in range(T.ndim(X)):
+        for i in range(X.ndim):
             L[i] += mu * (D - J[i])
 
         L_x += mu * (X - D - E)

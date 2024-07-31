@@ -93,7 +93,7 @@ def initialize_constrained_parafac(
     factors : CPTensor
         An initial cp tensor.
     """
-    n_modes = tl.ndim(tensor)
+    n_modes = tensor.ndim
     rng = tl.check_random_state(random_state)
 
     if init == "random":
@@ -103,7 +103,7 @@ def initialize_constrained_parafac(
 
     elif init == "svd":
         factors = []
-        for mode in range(tl.ndim(tensor)):
+        for mode in range(tensor.ndim):
             U, S, _ = svd_interface(unfold(tensor, mode), n_eigenvecs=rank, method=svd)
 
             # Put SVD initialization on the same scaling as the tensor in case normalize_factors=False
@@ -293,7 +293,7 @@ def constrained_parafac(
         smoothness=smoothness,
         monotonicity=monotonicity,
         hard_sparsity=hard_sparsity,
-        n_const=tl.ndim(tensor),
+        n_const=tensor.ndim,
     )
 
     weights, factors = initialize_constrained_parafac(
@@ -322,13 +322,13 @@ def constrained_parafac(
     if fixed_modes is None:
         fixed_modes = []
 
-    if tl.ndim(tensor) - 1 in fixed_modes:
+    if tensor.ndim - 1 in fixed_modes:
         warnings.warn(
             "You asked for fixing the last mode, which is not supported.\n "
             "The last mode will not be fixed. Consider using tl.moveaxis()"
         )
-        fixed_modes.remove(tl.ndim(tensor) - 1)
-    modes_list = [mode for mode in range(tl.ndim(tensor)) if mode not in fixed_modes]
+        fixed_modes.remove(tensor.ndim - 1)
+    modes_list = [mode for mode in range(tensor.ndim) if mode not in fixed_modes]
 
     # ADMM inits
     dual_variables = []
@@ -342,7 +342,7 @@ def constrained_parafac(
             print("Starting iteration", iteration + 1)
         for mode in modes_list:
             if verbose > 1:
-                print("Mode", mode, "of", tl.ndim(tensor))
+                print("Mode", mode, "of", tensor.ndim)
 
             pseudo_inverse = tl.tensor(np.ones((rank, rank)), **tl.context(tensor))
             for i, factor in enumerate(factors):
@@ -359,7 +359,7 @@ def constrained_parafac(
                 factors[mode],
                 dual_variables[mode],
                 n_iter_max=n_iter_max_inner,
-                n_const=tl.ndim(tensor),
+                n_const=tensor.ndim,
                 order=mode,
                 non_negative=non_negative,
                 l1_reg=l1_reg,

@@ -217,13 +217,13 @@ def matricize(tensor, row_modes, column_modes=None):
         row_indices = [row_modes]
 
     if column_modes is None:
-        column_indices = [i for i in range(tl.ndim(tensor)) if i not in row_indices]
+        column_indices = [i for i in range(tensor.ndim) if i not in row_indices]
     else:
         try:
             column_indices = list(column_modes)
         except TypeError:
             column_indices = [column_modes]
-        if sorted(column_indices + row_indices) != list(range(tl.ndim(tensor))):
+        if sorted(column_indices + row_indices) != list(range(tensor.ndim)):
             msg = (
                 "If you provide both column and row modes for the matricization"
                 " then column_modes + row_modes must contain all the modes of the tensor."

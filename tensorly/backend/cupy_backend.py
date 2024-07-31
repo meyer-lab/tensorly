@@ -17,6 +17,7 @@ from .core import (
     backend_types,
     backend_basic_math,
     backend_array,
+    backend_all_but_pytorch,
 )
 
 
@@ -39,34 +40,15 @@ class CupyBackend(Backend, backend_name="cupy"):
             return cp.asnumpy(tensor)
         return tensor
 
-    @staticmethod
-    def ndim(tensor):
-        return tensor.ndim
-
-    @staticmethod
-    def clip(tensor, a_min=None, a_max=None):
-        return cp.clip(tensor, a_min, a_max)
-
-    @staticmethod
-    def logsumexp(tensor, axis=0):
-        max_tensor = cp.max(tensor, axis=axis, keepdims=True)
-        return cp.squeeze(
-            cp.log(cp.sum(cp.exp(tensor - max_tensor), axis=axis, keepdims=True))
-            + max_tensor,
-            axis=axis,
-        )
-
 
 for name in (
     backend_types
     + backend_basic_math
     + backend_array
+    + backend_all_but_pytorch
     + [
-        "moveaxis",
         "nan",
-        "transpose",
         "copy",
-        "trace",
         "arange",
         "dot",
         "kron",
@@ -74,15 +56,11 @@ for name in (
         "max",
         "flip",
         "mean",
-        "argmax",
         "sum",
-        "stack",
         "sign",
         "conj",
         "diag",
-        "tensordot",
         "log2",
-        "argsort",
         "sort",
         "shape",
     ]
@@ -93,3 +71,4 @@ for name in ["svd", "qr", "eigh", "solve", "lstsq"]:
     CupyBackend.register_method(name, getattr(cp.linalg, name))
 
 CupyBackend.register_method("gamma", cp.random.gamma)
+CupyBackend.register_method("logsumexp", cupyx.scipy.special.logsumexp)

@@ -573,7 +573,7 @@ def cp_mode_dot(cp_tensor, matrix_or_vector, mode, keep_dim=False, copy=False):
     weights, factors = cp_tensor
     contract = False
 
-    if T.ndim(matrix_or_vector) == 2:  # Tensor times matrix
+    if matrix_or_vector.ndim == 2:  # Tensor times matrix
         # Test for the validity of the operation
         if matrix_or_vector.shape[1] != shape[mode]:
             raise ValueError(
@@ -581,7 +581,7 @@ def cp_mode_dot(cp_tensor, matrix_or_vector, mode, keep_dim=False, copy=False):
                 f"{shape[mode]} (mode {mode}) != {matrix_or_vector.shape[1]} (dim 1 of matrix)"
             )
 
-    elif T.ndim(matrix_or_vector) == 1:  # Tensor times vector
+    elif matrix_or_vector.ndim == 1:  # Tensor times vector
         if matrix_or_vector.shape[0] != shape[mode]:
             raise ValueError(
                 f"shapes {shape} and {matrix_or_vector.shape} not aligned for mode-{mode} multiplication: "

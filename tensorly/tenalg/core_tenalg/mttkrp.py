@@ -44,7 +44,7 @@ def unfolding_dot_khatri_rao(tensor, cp_tensor, mode):
     (faster but more memory consuming)::
 
         projected = multi_mode_dot(tensor, factors, skip=mode, transpose=True)
-        ndims = T.ndim(tensor)
+        ndims = tensor.ndim
         res = []
         for i in range(factors[0].shape[1]):
             index = tuple([slice(None) if k == mode  else i for k in range(ndims)])
@@ -54,7 +54,7 @@ def unfolding_dot_khatri_rao(tensor, cp_tensor, mode):
 
     The same idea could be expressed using einsum::
 
-        ndims = tl.ndim(tensor)
+        ndims = tensor.ndim
         tensor_idx = ''.join(chr(ord('a') + i) for i in range(ndims))
         rank = chr(ord('a') + ndims + 1)
         op = tensor_idx

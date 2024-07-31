@@ -25,10 +25,10 @@ def _validate_tucker_tensor(tucker_tensor):
             f"However, {len(factors)} factor was given."
         )
 
-    if len(factors) != tl.ndim(core):
+    if len(factors) != core.ndim:
         raise ValueError(
             "Tucker decompositions should have one factor per more of the core tensor."
-            f"However, core has {tl.ndim(core)} modes but {len(factors)} factors have been provided"
+            f"However, core has {core.ndim} modes but {len(factors)} factors have been provided"
         )
 
     shape = []
@@ -90,7 +90,7 @@ def tucker_normalize(tucker_tensor):
             scales == 0, tl.ones(tl.shape(scales), **tl.context(factor)), scales
         )
         core = core * tl.reshape(
-            scales, (1,) * i + (-1,) + (1,) * (tl.ndim(core) - i - 1)
+            scales, (1,) * i + (-1,) + (1,) * (core.ndim - i - 1)
         )
         normalized_factors.append(factor / tl.reshape(scales_non_zero, (1, -1)))
     return TuckerTensor((core, normalized_factors))

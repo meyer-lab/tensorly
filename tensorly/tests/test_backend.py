@@ -243,19 +243,6 @@ def test_shape():
     assert type(T.shape(A2)) == tuple
 
 
-def test_ndim():
-    A = T.arange(3 * 4 * 5)
-    assert_equal(T.ndim(A), 1)
-
-    shape1 = (3 * 4, 5)
-    A1 = T.reshape(A, shape1)
-    assert_equal(T.ndim(A1), 2)
-
-    shape2 = (3, 4, 5)
-    A2 = T.reshape(A, shape2)
-    assert_equal(T.ndim(A2), 3)
-
-
 def test_norm():
     v = T.tensor([1.0, 2.0, 3.0])
     assert_equal(T.norm(v, 1), 6)
@@ -534,23 +521,6 @@ def test_sum_keepdims():
     assert tl.shape(summed_tensor8) == (10, 20)
     summed_tensor9 = tl.sum(random_tensor, axis=2, keepdims=True)
     assert tl.shape(summed_tensor9) == (10, 20, 1)
-
-
-def test_logsumexp():
-    """Test the logsumexp implementation against the scipy baseline result."""
-
-    # Example data
-    x = np.arange(24).reshape((3, 4, 2)).astype(np.float32)
-
-    # Tensorly tensor
-    tensor = tl.tensor(x)
-
-    # Compare against scipy baseline result
-    for axis in [0, 1, 2]:
-        # Run tensorly logsumexp
-        tensorly_result = tl.logsumexp(tensor, axis=axis)
-        scipy_result = special.logsumexp(x, axis=axis)
-        assert_allclose(tensorly_result, scipy_result)
 
 
 def test_dtype_tensor_init():

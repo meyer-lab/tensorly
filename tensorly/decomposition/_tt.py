@@ -99,12 +99,12 @@ def tensor_train_matrix(tensor, rank, svd="truncated_svd", verbose=False):
     -------
     tt_matrix
     """
-    order = tl.ndim(tensor)
+    order = tensor.ndim
     n_input = order // 2  # (n_output = n_input)
 
-    if tl.ndim(tensor) != n_input * 2:
+    if tensor.ndim != n_input * 2:
         msg = "The tensor should have as many dimensions for inputs and outputs, i.e. order should be even "
-        msg += f"but got a tensor of order tl.ndim(tensor)={order} which is odd."
+        msg += f"but got a tensor of order tensor.ndim={order} which is odd."
         raise ValueError(msg)
 
     in_shape = tl.shape(tensor)[:n_input]

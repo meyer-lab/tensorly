@@ -87,7 +87,7 @@ class CP_PLSR:
         X, Y = T.copy(X), T.copy(Y)
 
         # Check the shape of X and Y; convert vector Y to a matrix
-        if T.ndim(X) < 2:
+        if X.ndim < 2:
             raise ValueError("X must be at least a 2-mode tensor.")
         if (T.ndim(Y) != 1) and (T.ndim(Y) != 2):
             raise ValueError("Only a matrix (2-mode tensor) Y is allowed.")
@@ -142,7 +142,7 @@ class CP_PLSR:
                     comp_X_factors[mode] = tensor_to_vec(Z_comp[mode - 1])
 
                 comp_X_factors[0] = multi_mode_dot(
-                    X, comp_X_factors[1:], range(1, T.ndim(X))
+                    X, comp_X_factors[1:], range(1, X.ndim)
                 )
                 comp_Y_factors_1 = T.dot(T.transpose(Y), comp_X_factors[0])
                 comp_Y_factors_1 /= T.norm(comp_Y_factors_1)
@@ -209,7 +209,7 @@ class CP_PLSR:
                 multi_mode_dot(
                     X,
                     [factor[:, component] for factor in self.X_factors[1:]],
-                    range(1, T.ndim(X)),
+                    range(1, X.ndim),
                 ),
             )
             X -= outer(
@@ -252,7 +252,7 @@ class CP_PLSR:
                 multi_mode_dot(
                     X,
                     [ff[:, component] for ff in self.X_factors[1:]],
-                    range(1, T.ndim(X)),
+                    range(1, X.ndim),
                 ),
             )
             X -= outer(

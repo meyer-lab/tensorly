@@ -153,7 +153,7 @@ def partial_tucker(
 
     """
     if modes is None:
-        modes = list(range(tl.ndim(tensor)))
+        modes = list(range(tensor.ndim))
 
     if rank is None:
         message = "No value given for 'rank'. The decomposition will preserve the original size."
@@ -319,7 +319,7 @@ def tucker(
         return TuckerTensor((core, factors))
 
     else:
-        modes = list(range(tl.ndim(tensor)))
+        modes = list(range(tensor.ndim))
         # TO-DO validate rank for partial tucker as well
         rank = validate_tucker_rank(tl.shape(tensor), rank=rank)
 
@@ -399,7 +399,7 @@ def non_negative_tucker(
     nn_core, nn_factors = initialize_tucker(
         tensor,
         rank,
-        range(tl.ndim(tensor)),
+        range(tensor.ndim),
         init=init,
         random_state=random_state,
         non_negative=True,
@@ -409,7 +409,7 @@ def non_negative_tucker(
     rec_errors = []
 
     for iteration in range(n_iter_max):
-        for mode in range(tl.ndim(tensor)):
+        for mode in range(tensor.ndim):
             B = tucker_to_tensor((nn_core, nn_factors), skip_factor=mode)
             B = tl.transpose(unfold(B, mode))
 
@@ -569,25 +569,25 @@ def non_negative_tucker_hals(
        SIAM REVIEW, vol. 51, n. 3, pp. 455-500, 2009.
     """
     rank = validate_tucker_rank(tl.shape(tensor), rank=rank)
-    n_modes = tl.ndim(tensor)
+    n_modes = tensor.ndim
     if sparsity_coefficients is None or not isinstance(sparsity_coefficients, Iterable):
         sparsity_coefficients = [sparsity_coefficients] * n_modes
 
     if fixed_modes is None:
         fixed_modes = []
 
-    if tl.ndim(tensor) - 1 in fixed_modes:
+    if tensor.ndim - 1 in fixed_modes:
         warnings.warn(
             "You asked for fixing the last mode, which is not supported. The last mode will not be fixed."
             " Consider using tl.moveaxis() to permute it to another position and keep it fixed there."
         )
-        fixed_modes.remove(tl.ndim(tensor) - 1)
+        fixed_modes.remove(tensor.ndim - 1)
 
     # Avoiding errors
     for fixed_value in fixed_modes:
         sparsity_coefficients[fixed_value] = None
     # Generating the mode update sequence
-    modes = [mode for mode in range(tl.ndim(tensor)) if mode not in fixed_modes]
+    modes = [mode for mode in range(tensor.ndim) if mode not in fixed_modes]
 
     nn_core, nn_factors = initialize_tucker(
         tensor,

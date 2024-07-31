@@ -21,7 +21,7 @@ def unfolding_dot_khatri_rao(tensor, cp_tensor, mode):
         dot(unfold(tensor, mode), khatri-rao(factors))
     """
     weights, factors = cp_tensor
-    ndims = tl.ndim(tensor)
+    ndims = tensor.ndim
 
     if weights is None:
         weights = tl.ones(factors[0].shape[1], **tl.context(tensor))

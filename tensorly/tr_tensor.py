@@ -202,8 +202,8 @@ def validate_tr_rank(tensor_shape, rank="same", rounding="round"):
         elif n_dim + 1 != len(rank):
             message = (
                 "Provided incorrect number of ranks. "
-                "Should verify len(rank) == tl.ndim(tensor)+1, "
-                f"but len(rank) = {len(rank)} while tl.ndim(tensor)+1 = {n_dim + 1}"
+                "Should verify len(rank) == tensor.ndim+1, "
+                f"but len(rank) = {len(rank)} while tensor.ndim+1 = {n_dim + 1}"
             )
             raise ValueError(message)
 

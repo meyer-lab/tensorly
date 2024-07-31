@@ -39,6 +39,7 @@ backend_basic_math = [
     "arcsin",
 ]
 backend_array = [
+    "clip",
     "einsum",
     "matmul",
     "ones",
@@ -56,6 +57,17 @@ backend_array = [
     "min",
     "maximum",
     "zeros_like",
+    "argmin",
+    "argmax",
+    "argsort",
+    "stack",
+]
+backend_all_but_pytorch = [
+    "diagonal",
+    "moveaxis",
+    "transpose",
+    "trace",
+    "tensordot",
 ]
 
 

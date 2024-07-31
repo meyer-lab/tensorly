@@ -86,10 +86,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
         return tuple(tensor.shape)
 
     @staticmethod
-    def ndim(tensor):
-        return tensor.dim()
-
-    @staticmethod
     def arange(start, stop=None, step=1.0, *args, **kwargs):
         if stop is None:
             return torch.arange(
@@ -97,13 +93,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
             )
         else:
             return torch.arange(float(start), float(stop), float(step), *args, **kwargs)
-
-    @staticmethod
-    def clip(tensor, a_min=None, a_max=None, inplace=False):
-        if inplace:
-            return torch.clip(tensor, a_min, a_max, out=tensor)
-        else:
-            return torch.clip(tensor, a_min, a_max)
 
     @staticmethod
     def all(tensor):
@@ -147,19 +136,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
         return torch.tensordot(a, b, dims=axes, **kwargs)
 
     @staticmethod
-    def mean(tensor, axis=None):
-        if axis is None:
-            return torch.mean(tensor)
-        else:
-            return torch.mean(tensor, dim=axis)
-
-    @staticmethod
-    def sum(tensor, axis=None, keepdims=False):
-        if axis is None:
-            axis = tuple(range(tensor.ndim))
-        return torch.sum(tensor, dim=axis, keepdim=keepdims)
-
-    @staticmethod
     def max(tensor, axis=None):
         if axis is None:
             return torch.max(tensor)
@@ -179,22 +155,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
     @staticmethod
     def concatenate(tensors, axis=0):
         return torch.cat(tensors, dim=axis)
-
-    @staticmethod
-    def argmin(input, axis=None):
-        return torch.argmin(input, dim=axis)
-
-    @staticmethod
-    def argsort(input, axis=None):
-        return torch.argsort(input, dim=axis)
-
-    @staticmethod
-    def argmax(input, axis=None):
-        return torch.argmax(input, dim=axis)
-
-    @staticmethod
-    def stack(arrays, axis=0):
-        return torch.stack(arrays, dim=axis)
 
     @staticmethod
     def diag(tensor, k=0):
@@ -225,10 +185,10 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
     def sign(tensor):
         """torch.sign does not support complex numbers."""
         return torch.sgn(tensor)
-
+    
     @staticmethod
-    def logsumexp(tensor, axis=0):
-        return torch.logsumexp(tensor, dim=axis)
+    def diagonal(tensor, offset=0, axis1=0, axis2=1):
+        return torch.diagonal(tensor, offset=offset, dim1=axis1, dim2=axis2)
 
 
 # Register the other functions
@@ -244,6 +204,9 @@ for name in (
         "finfo",
         "log2",
         "digamma",
+        "logsumexp",
+        "sum",
+        "mean",
     ]
 ):
     PyTorchBackend.register_method(name, getattr(torch, name))

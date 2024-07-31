@@ -210,7 +210,7 @@ def test_non_negative_tucker(init, hals, monkeypatch):
     # Test for a single rank passed
     # (should be used for all modes)
     rank = 3
-    target_shape = (rank,) * tl.ndim(tensor)
+    target_shape = (rank,) * tensor.ndim
     core, factors = nn_method(tensor, rank=rank, n_iter_max=2)
     assert_(
         tl.shape(core) == target_shape,

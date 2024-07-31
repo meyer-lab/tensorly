@@ -474,9 +474,9 @@ def monotonicity_prox(tensor, decreasing=False):
     .. [1]: G. Chierchia, E. Chouzenoux, P. L. Combettes, and J.-C. Pesquet
             "The Proximity Operator Repository. User's guide"
     """
-    if tl.ndim(tensor) == 1:
+    if tensor.ndim == 1:
         tensor = tl.reshape(tensor, [tl.shape(tensor)[0], 1])
-    elif tl.ndim(tensor) > 2:
+    elif tensor.ndim > 2:
         raise ValueError(
             "Monotonicity prox doesn't support an input which has more than 2 dimensions."
         )
@@ -536,9 +536,9 @@ def unimodality_prox(tensor):
             unimodality and non‐negativity constraints. Journal of Chemometrics:
             A Journal of the Chemometrics Society, 12(4), 223-247.
     """
-    if tl.ndim(tensor) == 1:
+    if tensor.ndim == 1:
         tensor = tl.vec_to_tensor(tensor, [tl.shape(tensor)[0], 1])
-    elif tl.ndim(tensor) > 2:
+    elif tensor.ndim > 2:
         raise ValueError(
             "Unimodality prox doesn't support an input which has more than 2 dimensions."
         )
@@ -735,7 +735,7 @@ def simplex_prox(tensor, parameter):
             Mathematical programming 6.1 (1974): 62-88.
     """
     # Making it work for 1-dimensional tensors as well
-    if tl.ndim(tensor) > 1:
+    if tensor.ndim > 1:
         row, col = tl.shape(tensor)
     else:
         row = tl.shape(tensor)[0]

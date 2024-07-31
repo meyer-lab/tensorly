@@ -71,7 +71,7 @@ def initialize_cp(
 
     elif init == "svd":
         factors = []
-        for mode in range(tl.ndim(tensor)):
+        for mode in range(tensor.ndim):
             mask_unfold = None if mask is None else unfold(mask, mode)
             U, S, _ = svd_interface(
                 unfold(tensor, mode),
@@ -356,18 +356,18 @@ def parafac(
     if fixed_modes is None:
         fixed_modes = []
 
-    if fixed_modes == list(range(tl.ndim(tensor))):  # Check If all modes are fixed
+    if fixed_modes == list(range(tensor.ndim)):  # Check If all modes are fixed
         cp_tensor = CPTensor(
             (weights, factors)
         )  # No need to run optimization algorithm, just return the initialization
         return cp_tensor
 
-    if tl.ndim(tensor) - 1 in fixed_modes:
+    if tensor.ndim - 1 in fixed_modes:
         warnings.warn(
             "You asked for fixing the last mode, which is not supported.\n The last mode will not be fixed. Consider using tl.moveaxis()"
         )
-        fixed_modes.remove(tl.ndim(tensor) - 1)
-    modes_list = [mode for mode in range(tl.ndim(tensor)) if mode not in fixed_modes]
+        fixed_modes.remove(tensor.ndim - 1)
+    modes_list = [mode for mode in range(tensor.ndim) if mode not in fixed_modes]
 
     if sparsity:
         sparse_component = tl.zeros_like(tensor)
@@ -406,7 +406,7 @@ def parafac(
             print("Starting iteration", iteration + 1)
         for mode in modes_list:
             if verbose > 1:
-                print("Mode", mode, "of", tl.ndim(tensor))
+                print("Mode", mode, "of", tensor.ndim)
 
             pseudo_inverse = tl.ones((rank, rank), **tl.context(tensor))
             for i, factor in enumerate(factors):
@@ -451,7 +451,7 @@ def parafac(
             new_weights = weights_last + (weights - weights_last) * jump
             new_factors = [
                 factors_last[ii] + (factors[ii] - factors_last[ii]) * jump
-                for ii in range(tl.ndim(tensor))
+                for ii in range(tensor.ndim)
             ]
 
             new_rec_error, new_tensor, new_norm_tensor = error_calc(
@@ -693,7 +693,7 @@ def randomised_parafac(
         tensor, rank, init=init, svd=svd, random_state=random_state
     )
     rec_errors = []
-    n_dims = tl.ndim(tensor)
+    n_dims = tensor.ndim
     norm_tensor = tl.norm(tensor, 2)
     min_error = 0
 
