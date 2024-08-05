@@ -6,6 +6,7 @@ import threading
 import types
 import warnings
 import math
+from typing import Protocol
 
 import numpy as np
 import scipy.special
@@ -87,7 +88,7 @@ class Index:
         return "Index"
 
 
-class Backend(object):
+class Backend(Protocol):
     _available_backends = dict()
 
     def __init_subclass__(cls, backend_name, **kwargs):
@@ -120,7 +121,7 @@ class Backend(object):
 
     @property
     def e(self):
-        raise NotImplementedError
+        pass
 
     @property
     def pi(self):
@@ -128,35 +129,35 @@ class Backend(object):
 
     @property
     def nan(self):
-        raise NotImplementedError
+        pass
 
     @property
     def inf(self):
-        raise NotImplementedError
+        pass
 
     @property
     def int64(self):
-        raise NotImplementedError
+        pass
 
     @property
     def int32(self):
-        raise NotImplementedError
+        pass
 
     @property
     def float64(self):
-        raise NotImplementedError
+        pass
 
     @property
     def float32(self):
-        raise NotImplementedError
+        pass
 
     @property
     def complex128(self):
-        raise NotImplementedError
+        pass
 
     @property
     def complex64(self):
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def check_random_state(seed):
@@ -273,17 +274,17 @@ class Backend(object):
     @staticmethod
     def is_tensor(obj):
         """Returns if `obj` is a tensor for the current backend"""
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def shape(tensor):
         """Return the shape of a tensor"""
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def ndim(tensor):
         """Return the number of dimensions of a tensor"""
-        raise NotImplementedError
+        return tensor.ndim
 
     @staticmethod
     def to_numpy(tensor):
@@ -302,10 +303,10 @@ class Backend(object):
     @staticmethod
     def copy(tensor):
         """Return a copy of the given tensor"""
-        raise NotImplementedError
+        pass
 
     @staticmethod
-    def concatenate(tensors, axis=0):
+    def concatenate(tensors, axis: int=0):
         """Concatenate tensors along an axis.
 
         Parameters
@@ -320,7 +321,7 @@ class Backend(object):
         -------
         tensor
         """
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def reshape(tensor, newshape):
@@ -340,14 +341,14 @@ class Backend(object):
         raise NotImplementedError
 
     @staticmethod
-    def transpose(tensor):
+    def transpose(tensor, axes):
         """Permute the dimensions of a tensor.
 
         Parameters
         ----------
         tensor : tensor
         """
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def arange(start=0, stop=None, step=None):
@@ -366,7 +367,7 @@ class Backend(object):
         -------
         tensor
         """
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def ones(shape, dtype=None):
@@ -379,7 +380,7 @@ class Backend(object):
         dtype : data-type, optional
             The desired data-type for the tensor.
         """
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def zeros(shape, dtype=None):
@@ -392,7 +393,7 @@ class Backend(object):
         dtype : data-type, optional
             The desired data-type for the tensor.
         """
-        raise NotImplementedError
+        pass
 
     @staticmethod
     def zeros_like(tensor):
@@ -1067,7 +1068,7 @@ class Backend(object):
         b = self.reshape(b, (1, s3, 1, s4))
         return self.reshape(a * b, (s1 * s3, s2 * s4))
 
-    def svd(self, matrix):
+    def svd(self, matrix, full_matrices: bool):
         raise NotImplementedError
 
     def eigh(self, matrix):

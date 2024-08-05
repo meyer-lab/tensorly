@@ -86,10 +86,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
         return tuple(tensor.shape)
 
     @staticmethod
-    def ndim(tensor):
-        return tensor.dim()
-
-    @staticmethod
     def arange(start, stop=None, step=1.0, *args, **kwargs):
         if stop is None:
             return torch.arange(
@@ -109,8 +105,9 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
     def all(tensor):
         return torch.sum(tensor != 0)
 
-    def transpose(self, tensor, axes=None):
-        axes = axes or list(range(self.ndim(tensor)))[::-1]
+    @staticmethod
+    def transpose(tensor, axes=None):
+        axes = axes or list(range(tensor.ndim))[::-1]
         return tensor.permute(*axes)
 
     @staticmethod
@@ -215,11 +212,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
     @staticmethod
     def lstsq(a, b, rcond=None, driver="gelsd"):
         return torch.linalg.lstsq(a, b, rcond=rcond, driver=driver)
-
-    @staticmethod
-    def eigh(tensor):
-        """Legacy only, deprecated from PyTorch 1.8.0"""
-        return torch.symeig(tensor, eigenvectors=True)
 
     @staticmethod
     def sign(tensor):

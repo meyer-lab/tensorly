@@ -40,10 +40,6 @@ class CupyBackend(Backend, backend_name="cupy"):
         return tensor
 
     @staticmethod
-    def ndim(tensor):
-        return tensor.ndim
-
-    @staticmethod
     def clip(tensor, a_min=None, a_max=None):
         return cp.clip(tensor, a_min, a_max)
 

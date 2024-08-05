@@ -82,12 +82,13 @@ class TensorflowBackend(Backend, backend_name="tensorflow"):
 
     @staticmethod
     def solve(lhs, rhs):
-        squeeze = False
         if rhs.ndim == 1:
             squeeze = [-1]
             rhs = tf.reshape(rhs, (-1, 1))
+
         res = tf.linalg.solve(lhs, rhs)
-        if squeeze:
+
+        if rhs.ndim == 1:
             res = tf.squeeze(res, squeeze)
         return res
 
@@ -110,7 +111,8 @@ class TensorflowBackend(Backend, backend_name="tensorflow"):
         S, U, V = tf.linalg.svd(matrix, full_matrices=full_matrices)
         return U, S, tf.transpose(a=V)
 
-    def index_update(self, tensor, indices, values):
+    @staticmethod
+    def index_update(tensor, indices, values):
         if not isinstance(tensor, tf.Variable):
             tensor = tf.Variable(tensor)
             to_tensor = True
@@ -119,7 +121,7 @@ class TensorflowBackend(Backend, backend_name="tensorflow"):
 
         if isinstance(values, int):
             values = tf.constant(
-                np.ones(self.shape(tensor[indices])) * values, **self.context(tensor)
+                np.ones(tensor[indices].shape) * values, tensor.dtype
             )
 
         tensor = tensor[indices].assign(values)
@@ -169,7 +171,6 @@ for name in (
         "mean",
         "sum",
         "moveaxis",
-        "ndim",
         "arange",
         "sort",
         "argsort",
