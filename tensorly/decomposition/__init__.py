@@ -31,3 +31,5 @@ from ._symmetric_cp import (
 from ._cp_power import parafac_power_iteration, power_iteration, CPPower
 from ._cmtf_als import coupled_matrix_tensor_3d_factorization
 from ._constrained_cp import constrained_parafac, ConstrainedCP
+
+__all__ = ["parafac", "CP", "RandomizedCP", "randomised_parafac", "sample_khatri_rao", "non_negative_parafac", "non_negative_parafac_hals", "CP_NN_HALS", "CP_NN", "tucker", "partial_tucker", "non_negative_tucker", "non_negative_tucker_hals", "Tucker", "robust_pca", "tensor_train", "tensor_train_matrix", "TensorTrain", "TensorTrainMatrix", "tensor_ring", "TensorRing", "tensor_ring_als", "tensor_ring_als_sampled", "TensorRingALS", "TensorRingALSSampled", "parafac2", "Parafac2", "symmetric_parafac_power_iteration", "symmetric_power_iteration", "SymmetricCP", "parafac_power_iteration", "power_iteration", "CPPower", "coupled_matrix_tensor_3d_factorization", "constrained_parafac", "ConstrainedCP"]

@@ -102,6 +102,7 @@ from .backend import (
     randn,
     log,
     log2,
+    tensordot,
     exp,
     sin,
     cos,

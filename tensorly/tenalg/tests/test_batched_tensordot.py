@@ -1,9 +1,9 @@
 import tensorly as tl
+from tensorly.backend import tensordot
 
 from ...testing import assert_array_almost_equal, assert_raises, assert_
 from ... import random
 from .. import tensordot
-import pytest
 
 
 def test_batched_tensordot():
@@ -12,7 +12,7 @@ def test_batched_tensordot():
     tensor = random.random_tensor((shape))
 
     # Equivalence with inner product when contracting with self along all modes
-    res = tensordot(tensor, tensor, modes=3)  # [[0, 1, 2], [0, 1, 2]])
+    res = tl.tensordot(tensor, tensor, modes=3)  # [[0, 1, 2], [0, 1, 2]])
     true_res = tl.tenalg.inner(tensor, tensor, n_modes=3)
     assert_array_almost_equal(true_res, res, decimal=5)
     # Equivalent to the above expression

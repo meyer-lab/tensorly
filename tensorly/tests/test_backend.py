@@ -3,7 +3,6 @@ from concurrent.futures import ThreadPoolExecutor
 import pytest
 from time import time
 import numpy as np
-from scipy.linalg import svd
 from scipy import special
 
 import tensorly as tl
@@ -230,17 +229,17 @@ def test_randomized_range_finder():
 
 
 def test_shape():
-    A = T.arange(3 * 4 * 5)
+    A = tl.arange(3 * 4 * 5)
 
     shape1 = (3 * 4, 5)
-    A1 = T.reshape(A, shape1)
-    assert_equal(T.shape(A1), shape1)
+    A1 = tl.reshape(A, shape1)
+    assert_equal(tl.shape(A1), shape1)
 
     shape2 = (3, 4, 5)
-    A2 = T.reshape(A, shape2)
-    assert_equal(T.shape(A2), shape2)
+    A2 = tl.reshape(A, shape2)
+    assert_equal(tl.shape(A2), shape2)
 
-    assert type(T.shape(A2)) == tuple
+    assert type(tl.shape(A2)) is tuple
 
 
 def test_ndim():

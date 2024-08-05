@@ -217,11 +217,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
         return torch.linalg.lstsq(a, b, rcond=rcond, driver=driver)
 
     @staticmethod
-    def eigh(tensor):
-        """Legacy only, deprecated from PyTorch 1.8.0"""
-        return torch.symeig(tensor, eigenvectors=True)
-
-    @staticmethod
     def sign(tensor):
         """torch.sign does not support complex numbers."""
         return torch.sgn(tensor)
@@ -237,13 +232,13 @@ for name in (
     + backend_basic_math
     + backend_array
     + [
-        "nan",
-        "is_tensor",
-        "trace",
         "conj",
-        "finfo",
-        "log2",
         "digamma",
+        "finfo",
+        "is_tensor",
+        "log2",
+        "nan",
+        "trace",
     ]
 ):
     PyTorchBackend.register_method(name, getattr(torch, name))

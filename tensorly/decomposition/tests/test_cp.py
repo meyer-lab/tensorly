@@ -313,6 +313,7 @@ def test_non_negative_parafac(
         random_state=rng,
         return_errors=True,
     )
+    errors = tl.to_numpy(errors)
     assert_(np.all(np.diff(errors) <= 1.0e-3))
 
     # Make sure all components are positive

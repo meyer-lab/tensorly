@@ -71,12 +71,14 @@ class NumpySparseBackend(Backend, backend_name="numpy.sparse"):
         else:
             return np.sum(np.abs(tensor) ** order, axis=axis) ** (1 / order)
 
-    def dot(self, x, y):
+    @staticmethod
+    def dot(x, y):
         if is_sparse(x) or is_sparse(y):
             return sparse.dot(x, y)
         return np.dot(x, y)
 
-    def solve(self, A, b):
+    @staticmethod
+    def solve(A, b):
         """
         Compute x s.t. Ax = b
         """

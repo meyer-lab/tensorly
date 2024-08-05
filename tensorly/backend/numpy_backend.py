@@ -26,10 +26,6 @@ class NumpyBackend(Backend, backend_name="numpy"):
         return np.copy(tensor)
 
     @staticmethod
-    def ndim(tensor):
-        return tensor.ndim
-
-    @staticmethod
     def clip(tensor, a_min=None, a_max=None):
         return np.clip(tensor, a_min, a_max)
 
@@ -43,31 +39,31 @@ for name in (
     + backend_basic_math
     + backend_array
     + [
-        "nan",
-        "moveaxis",
-        "trace",
-        "copy",
-        "transpose",
         "arange",
+        "argmax",
+        "argmin",
+        "argsort",
+        "concatenate",
+        "conj",
+        "copy",
+        "diag",
+        "dot",
         "flip",
         "kron",
-        "concatenate",
-        "max",
-        "mean",
-        "sum",
-        "argmin",
-        "argmax",
-        "sign",
-        "stack",
-        "conj",
-        "diag",
         "log",
         "log2",
-        "tensordot",
-        "argsort",
-        "sort",
-        "dot",
+        "max",
+        "mean",
+        "moveaxis",
+        "nan",
         "shape",
+        "sign",
+        "sort",
+        "stack",
+        "sum",
+        "tensordot",
+        "trace",
+        "transpose",
     ]
 ):
     NumpyBackend.register_method(name, getattr(np, name))

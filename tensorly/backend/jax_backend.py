@@ -24,8 +24,8 @@ from .core import (
 )
 
 
-if Version(jax.__version__) < Version("0.3.0"):
-    raise RuntimeError("TensorLy only supports JAX v0.3.0 and above.")
+if Version(jax.__version__) < Version("0.3.5"):
+    raise RuntimeError("TensorLy only supports JAX v0.3.5 and above.")
 
 
 class JaxBackend(Backend, backend_name="jax"):
@@ -45,16 +45,6 @@ class JaxBackend(Backend, backend_name="jax"):
     def to_numpy(tensor):
         return numpy.asarray(tensor)
 
-    def copy(self, tensor):
-        # See https://github.com/tensorly/tensorly/pull/397
-        # and https://github.com/google/jax/issues/3473
-        return self.tensor(tensor.copy(), **self.context(tensor))
-        # return copy.copy(tensor)
-
-    @staticmethod
-    def ndim(tensor):
-        return tensor.ndim
-
     @staticmethod
     def lstsq(a, b, rcond=None):
         return np.linalg.lstsq(a, b, rcond=rcond, numpy_resid=True)
@@ -73,30 +63,31 @@ for name in (
     + backend_basic_math
     + backend_array
     + [
-        "nan",
-        "moveaxis",
-        "transpose",
         "arange",
-        "flip",
-        "trace",
-        "kron",
+        "argmax",
+        "argmin",
+        "argsort",
+        "clip",
         "concatenate",
+        "conj",
+        "copy",
+        "diag",
+        "dot",
+        "flip",
+        "kron",
+        "log2",
         "max",
         "mean",
-        "sum",
-        "argmin",
-        "argmax",
-        "stack",
-        "sign",
-        "conj",
-        "diag",
-        "clip",
-        "log2",
-        "tensordot",
-        "argsort",
-        "sort",
-        "dot",
+        "moveaxis",
+        "nan",
         "shape",
+        "sign",
+        "sort",
+        "stack",
+        "sum",
+        "tensordot",
+        "trace",
+        "transpose",
     ]
 ):
     JaxBackend.register_method(name, getattr(np, name))

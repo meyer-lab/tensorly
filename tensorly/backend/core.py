@@ -283,7 +283,7 @@ class Backend(object):
     @staticmethod
     def ndim(tensor):
         """Return the number of dimensions of a tensor"""
-        raise NotImplementedError
+        return tensor.ndim
 
     @staticmethod
     def to_numpy(tensor):
@@ -1257,13 +1257,5 @@ class Backend(object):
             "partial_svd is no longer used. "
             "Please use tensorly.tenalg.svd_interface instead, "
             "it provides a unified interface to all available SVD implementations."
-        )
-        raise NotImplementedError(msg)
-
-    def kr(self, matrices, weights=None, mask=None):
-        msg = (
-            "kr is no longer used. "
-            "Please use tensorly.tenalg.khatri_rao instead, "
-            "it provides a unified interface to Khatri Rao implementations."
         )
         raise NotImplementedError(msg)
