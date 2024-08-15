@@ -196,7 +196,7 @@ def test_tensor_ring_als_sampled_large_decomp(uniform_sampling, randomized_error
 
     # Some decomposition properties
     n_samples = 2000  # Note: The smallest least squares problem has 17160 rows
-    n_iter_max = 100
+    n_iter_max = 60
 
     # Generate random tensor which has exact tensor ring decomposition
     tensor = random_tr(

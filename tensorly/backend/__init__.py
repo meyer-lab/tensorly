@@ -21,14 +21,11 @@ class dynamically_dispatched_class_attribute(object):
 
     __slots__ = ["name"]
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.name = name
 
-    def __get__(self, instance, cls=None):
-        if isinstance is None:
-            return getattr(cls.current_backend(), self.name)
-        else:
-            return getattr(instance.current_backend(), self.name)
+    def __get__(self, instance: types.ModuleType):
+        return getattr(instance.current_backend(), self.name)
 
 
 class BackendManager(types.ModuleType):
