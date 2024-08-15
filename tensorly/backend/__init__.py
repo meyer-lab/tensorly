@@ -24,8 +24,8 @@ class dynamically_dispatched_class_attribute(object):
     def __init__(self, name: str):
         self.name = name
 
-    def __get__(self, instance: types.ModuleType):
-        return getattr(instance.current_backend(), self.name)
+    def __get__(self, _, cls):
+        return getattr(cls.current_backend(), self.name)
 
 
 class BackendManager(types.ModuleType):
