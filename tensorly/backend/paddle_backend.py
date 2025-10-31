@@ -159,10 +159,6 @@ class PaddleBackend(Backend, backend_name="paddle"):
         return tuple(tensor.shape)
 
     @staticmethod
-    def ndim(tensor: paddle.Tensor):
-        return tensor.ndim
-
-    @staticmethod
     def clip(tensor: paddle.Tensor, a_min=None, a_max=None, inplace=False):
         if inplace:
             paddle.clip_(tensor, a_min, a_max)

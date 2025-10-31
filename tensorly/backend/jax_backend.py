@@ -52,10 +52,6 @@ class JaxBackend(Backend, backend_name="jax"):
         # return copy.copy(tensor)
 
     @staticmethod
-    def ndim(tensor):
-        return tensor.ndim
-
-    @staticmethod
     def lstsq(a, b, rcond=None):
         return np.linalg.lstsq(a, b, rcond=rcond, numpy_resid=True)
 

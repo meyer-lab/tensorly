@@ -298,6 +298,11 @@ class Backend:
     def copy(tensor):
         """Return a copy of the given tensor"""
         raise NotImplementedError
+    
+    @staticmethod
+    def ndim(tensor):
+        """Return the number of dimensions of a tensor"""
+        return tensor.ndim
 
     @staticmethod
     def concatenate(tensors, axis=0):
