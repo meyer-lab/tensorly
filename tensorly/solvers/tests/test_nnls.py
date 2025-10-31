@@ -6,14 +6,14 @@ from tensorly.solvers.nnls import (
     fista,
     active_set_nnls,
 )
-from tensorly.testing import assert_, assert_array_equal, assert_array_almost_equal
-from tensorly import tensor_to_vec, truncated_svd
+from tensorly.testing import assert_array_almost_equal
+from tensorly import tensor_to_vec
 import pytest
 
 # Author: Jean Kossaifi
 skip_tensorflow = pytest.mark.skipif(
     (tl.get_backend() == "tensorflow"),
-    reason=f"Indexing with list not supported in TensorFlow",
+    reason="Indexing with list not supported in TensorFlow",
 )
 
 

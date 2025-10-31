@@ -1,4 +1,3 @@
-import numpy as np
 from ..cp_tensor import cp_to_tensor, CPTensor, cp_normalize, validate_cp_rank
 from ..tucker_tensor import tucker_to_tensor, TuckerTensor, validate_tucker_rank
 from ..tt_tensor import tt_to_tensor, TTTensor, validate_tt_rank

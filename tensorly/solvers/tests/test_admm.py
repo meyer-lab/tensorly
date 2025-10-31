@@ -2,14 +2,13 @@ import numpy as np
 import tensorly as tl
 
 from tensorly.solvers.admm import admm
-from tensorly.testing import assert_, assert_array_equal, assert_array_almost_equal
-from tensorly import tensor_to_vec, truncated_svd
+from tensorly.testing import assert_array_almost_equal
 import pytest
 
 # Author: Jean Kossaifi
 skip_tensorflow = pytest.mark.skipif(
     (tl.get_backend() == "tensorflow"),
-    reason=f"Indexing with list not supported in TensorFlow",
+    reason="Indexing with list not supported in TensorFlow",
 )
 
 
