@@ -18,7 +18,6 @@ from .._nn_cp import (
     CP_NN_HALS,
 )
 from ...cp_tensor import cp_to_tensor
-from ...cp_tensor import cp_to_tensor
 from ...random import random_cp
 from ...tenalg import khatri_rao
 from ... import backend as T

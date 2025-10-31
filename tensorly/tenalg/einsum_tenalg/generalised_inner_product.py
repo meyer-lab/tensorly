@@ -1,5 +1,4 @@
 from ... import backend as T
-import numpy as np
 
 # Author: Jean Kossaifi
 # License: BSD 3 clause

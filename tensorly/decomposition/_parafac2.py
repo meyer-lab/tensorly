@@ -1,5 +1,6 @@
 from warnings import warn
-from typing import Iterable, Optional, Sequence, Literal, Union
+from typing import Literal
+from collections.abc import Iterable, Sequence
 
 import tensorly as tl
 from ._base_decomposition import DecompositionMixin
@@ -140,7 +141,7 @@ def initialize_decomposition(
         projections = _compute_projections(tensor_slices, (A, B, C), svd)
         return Parafac2Tensor((None, [A, B, C], projections))
 
-    elif isinstance(init, (tuple, list, Parafac2Tensor, CPTensor)):
+    elif isinstance(init, tuple | list | Parafac2Tensor | CPTensor):
         try:
             decomposition = Parafac2Tensor.from_CPTensor(init, parafac2_tensor_ok=True)
         except ValueError:
@@ -404,9 +405,9 @@ def parafac2(
     svd: SVD_TYPES = "truncated_svd",
     normalize_factors: bool = False,
     tol: float = 1.0e-8,
-    nn_modes: Optional[Union[Sequence[int], Literal["all"]]] = None,
+    nn_modes: Sequence[int] | Literal["all"] | None = None,
     random_state=None,
-    verbose: Union[bool, int] = False,
+    verbose: bool | int = False,
     return_errors: bool = False,
     n_iter_parafac: int = 5,
     linesearch: bool = True,

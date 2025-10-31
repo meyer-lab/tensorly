@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Sequence
+from collections.abc import Sequence
 
 from packaging.version import Version
 import warnings
@@ -159,10 +159,6 @@ class PaddleBackend(Backend, backend_name="paddle"):
         return tuple(tensor.shape)
 
     @staticmethod
-    def ndim(tensor: paddle.Tensor):
-        return tensor.ndim
-
-    @staticmethod
     def clip(tensor: paddle.Tensor, a_min=None, a_max=None, inplace=False):
         if inplace:
             paddle.clip_(tensor, a_min, a_max)
@@ -176,7 +172,7 @@ class PaddleBackend(Backend, backend_name="paddle"):
 
     def transpose(self, tensor: paddle.Tensor, axes: int | Sequence[int] | None = None):
         axes = axes or list(range(self.ndim(tensor)))[::-1]
-        if not isinstance(axes, (tuple, list)):
+        if not isinstance(axes, tuple | list):
             axes = list(axes)
         return tensor.transpose(axes)
 

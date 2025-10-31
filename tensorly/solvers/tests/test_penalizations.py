@@ -1,4 +1,3 @@
-import numpy as np
 import tensorly as tl
 
 from tensorly.solvers.penalizations import process_regularization_weights

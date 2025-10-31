@@ -180,7 +180,6 @@ for name in (
         "mean",
         "sum",
         "moveaxis",
-        "ndim",
         "arange",
         "sort",
         "argsort",

@@ -8,9 +8,6 @@ from ..tucker_tensor import (
     validate_tucker_rank,
     tucker_normalize,
 )
-from ..solvers.penalizations import (
-    process_regularization_weights,
-)
 from ..solvers.nnls import hals_nnls, fista, active_set_nnls
 from math import sqrt
 import warnings

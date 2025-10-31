@@ -86,10 +86,6 @@ class PyTorchBackend(Backend, backend_name="pytorch"):
         return tuple(tensor.shape)
 
     @staticmethod
-    def ndim(tensor):
-        return tensor.dim()
-
-    @staticmethod
     def arange(start, stop=None, step=1.0, *args, **kwargs):
         if stop is None:
             return torch.arange(

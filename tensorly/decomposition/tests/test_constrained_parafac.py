@@ -11,7 +11,6 @@ from ...testing import (
     assert_array_almost_equal,
     assert_class_wrapper_correctly_passes_arguments,
 )
-from ...random import random_cp
 
 
 def test_constrained_parafac_nonnegative(monkeypatch):

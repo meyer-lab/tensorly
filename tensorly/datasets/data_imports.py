@@ -4,10 +4,6 @@ Load example datasets.
 
 from os.path import dirname
 import numpy as np
-from urllib.request import urlopen
-import scipy.io
-from zipfile import ZipFile
-from io import BytesIO
 import tensorly as tl
 
 

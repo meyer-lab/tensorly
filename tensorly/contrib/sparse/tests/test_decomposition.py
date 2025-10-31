@@ -1,5 +1,4 @@
 from ..decomposition import parafac
-from ..tenalg import multi_mode_dot
 from ..cp_tensor import cp_to_tensor
 from .... import backend as tl
 

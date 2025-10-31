@@ -1,6 +1,3 @@
-import tensorly as tl
-import numpy as np
-import copy
 import warnings
 
 
@@ -24,10 +21,10 @@ def process_regularization_weights(ridge_coefficients, sparsity_coefficients, n_
     list of floats
         sparsity coefficients, processed
     """
-    if ridge_coefficients is None or isinstance(ridge_coefficients, (int, float)):
+    if ridge_coefficients is None or isinstance(ridge_coefficients, int | float):
         # Populate None or the input float in a list for all modes
         ridge_coefficients = [ridge_coefficients] * n_modes
-    if sparsity_coefficients is None or isinstance(sparsity_coefficients, (int, float)):
+    if sparsity_coefficients is None or isinstance(sparsity_coefficients, int | float):
         # Populate None or the input float in a list for all modes
         sparsity_coefficients = [sparsity_coefficients] * n_modes
     # Convert None to 0

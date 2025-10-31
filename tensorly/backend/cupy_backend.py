@@ -10,7 +10,6 @@ except ImportError as error:
     )
     raise ImportError(message) from error
 
-import warnings
 
 from .core import (
     Backend,
@@ -38,10 +37,6 @@ class CupyBackend(Backend, backend_name="cupy"):
         if isinstance(tensor, cp.ndarray):
             return cp.asnumpy(tensor)
         return tensor
-
-    @staticmethod
-    def ndim(tensor):
-        return tensor.ndim
 
     @staticmethod
     def clip(tensor, a_min=None, a_max=None):

@@ -1,5 +1,3 @@
-import numpy as np
-import pytest
 
 from .. import backend as tl
 from ..base import unfold, tensor_to_vec

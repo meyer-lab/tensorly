@@ -1,7 +1,7 @@
 import tensorly as tl
 from ._base_decomposition import DecompositionMixin
 from ..tt_tensor import validate_tt_rank, TTTensor
-from ..tt_matrix import validate_tt_matrix_rank, TTMatrix
+from ..tt_matrix import TTMatrix
 from ..tenalg.svd import svd_interface
 
 

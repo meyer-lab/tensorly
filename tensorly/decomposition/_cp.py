@@ -99,7 +99,7 @@ def initialize_cp(
 
         kt = CPTensor((None, factors))
 
-    elif isinstance(init, (tuple, list, CPTensor)):
+    elif isinstance(init, tuple | list | CPTensor):
         # TODO: Test this
         try:
             if normalize_factors is True:

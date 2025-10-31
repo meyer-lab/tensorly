@@ -1,4 +1,3 @@
-import pytest
 
 from ..data_imports import (
     load_IL2data,

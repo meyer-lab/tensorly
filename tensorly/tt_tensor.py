@@ -15,7 +15,7 @@ def _validate_tt_tensor(tt_tensor):
     if isinstance(tt_tensor, TTTensor):
         # it's already been validated at creation
         return tt_tensor.shape, tt_tensor.rank
-    elif isinstance(tt_tensor, (float, int)):  # 0-order tensor
+    elif isinstance(tt_tensor, float | int):  # 0-order tensor
         return 0, 0
 
     rank = []
@@ -74,7 +74,7 @@ def tt_to_tensor(factors):
     output_tensor : ndarray
                    tensor whose TT/MPS decomposition was given by 'factors'
     """
-    if isinstance(factors, (float, int)):  # 0-order tensor
+    if isinstance(factors, float | int):  # 0-order tensor
         return factors
 
     full_shape = [f.shape[1] for f in factors]
