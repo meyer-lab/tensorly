@@ -10,7 +10,6 @@ except ImportError as error:
     )
     raise ImportError(message) from error
 
-import warnings
 
 from .core import (
     Backend,

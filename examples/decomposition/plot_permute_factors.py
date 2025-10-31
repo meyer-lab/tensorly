@@ -13,7 +13,6 @@ On this page, you will find examples showing how to use tensorly.cp_tensor.cp_pe
 # The permuted tensor (or list of tensors) and list of permutation for each permuted tensors are returned.
 # Tensorly CPTensor should be used as an input to permute their factors and weights simultaneously.
 
-import tensorly as tl
 from tensorly.random import random_cp
 from tensorly.cp_tensor import cp_permute_factors
 import matplotlib.pyplot as plt

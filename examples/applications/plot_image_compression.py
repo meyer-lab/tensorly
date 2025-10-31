@@ -12,7 +12,6 @@ from scipy.datasets import face
 from scipy.ndimage import zoom
 from tensorly.decomposition import parafac
 from tensorly.decomposition import tucker
-from math import ceil
 
 
 random_state = 12345

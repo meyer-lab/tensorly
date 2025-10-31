@@ -121,7 +121,7 @@ def initialize_constrained_parafac(
 
             factors.append(U[:, :rank])
 
-    elif isinstance(init, (tuple, list, CPTensor)):
+    elif isinstance(init, tuple | list | CPTensor):
         try:
             weights, factors = CPTensor(init)
 

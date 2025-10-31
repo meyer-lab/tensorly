@@ -34,7 +34,7 @@ def _validate_contraction_modes(shape1, shape2, modes, batched_modes=False):
 
     if len(modes1) != len(modes2):
         if batched_modes:
-            message = f"Both tensors must have the same number of batched modes"
+            message = "Both tensors must have the same number of batched modes"
         else:
             message = (
                 "Both tensors must have the same number of modes to contract along. "

@@ -177,7 +177,7 @@ def _validate_cp_tensor(cp_tensor):
     if isinstance(cp_tensor, CPTensor):
         # it's already been validated at creation
         return cp_tensor.shape, cp_tensor.rank
-    elif isinstance(cp_tensor, (float, int)):  # 0-order tensor
+    elif isinstance(cp_tensor, float | int):  # 0-order tensor
         return 0, 0
 
     weights, factors = cp_tensor

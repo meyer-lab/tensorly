@@ -32,7 +32,6 @@ from .tt_tensor import (
 )
 from .tt_matrix import (
     tt_matrix_to_tensor,
-    tt_matrix_to_tensor,
     validate_tt_matrix_rank,
     tt_matrix_to_unfolded,
     tt_matrix_to_vec,
@@ -72,7 +71,6 @@ from .backend import (
     where,
     conj,
     index,
-    index_update,
     clip,
     max,
     min,

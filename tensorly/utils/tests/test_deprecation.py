@@ -1,4 +1,4 @@
-from ..deprecation import deprecated, DefineDeprecated
+from ..deprecation import deprecated
 
 
 def test_deprecated():

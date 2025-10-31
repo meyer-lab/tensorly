@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Sequence
+from collections.abc import Sequence
 
 from packaging.version import Version
 import warnings
@@ -176,7 +176,7 @@ class PaddleBackend(Backend, backend_name="paddle"):
 
     def transpose(self, tensor: paddle.Tensor, axes: int | Sequence[int] | None = None):
         axes = axes or list(range(self.ndim(tensor)))[::-1]
-        if not isinstance(axes, (tuple, list)):
+        if not isinstance(axes, tuple | list):
             axes = list(axes)
         return tensor.transpose(axes)
 
